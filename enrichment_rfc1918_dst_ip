@@ -1,0 +1,12 @@
+rule "enrichment_rfc1918_dst_ip"
+when
+    has_field("dst_ip")
+    AND
+    ( 
+        in_private_net(to_string($message.dst_ip))
+        OR
+        cidr_match("127.0.0.0/8", to_ip($message.dst_ip))
+    )
+then
+	set_field("dst_ip_is_internal", true);
+end
